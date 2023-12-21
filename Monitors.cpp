@@ -29,7 +29,7 @@ void* produce(void* arg) {
 		monitor.value = value;
 		monitor.ready = true;
 		printf("produce value: %d\n", monitor.value);
-
+		Sleep(200);
 		pthread_cond_signal(&monitor.cond);
 		pthread_mutex_unlock(&monitor.lock);
 	}
@@ -45,39 +45,19 @@ void* consume(void* arg) {
 
 		monitor.ready = false;
 		printf(" consume value: %d\n", monitor.value);
-
+		Sleep(200);
 		pthread_mutex_unlock(&monitor.lock);
 	}
 }
 
 int main() {
 	pthread_t provider;
-	pthread_t consumer;
+ pthread_t consumer;
 
-	int status = 0;
+ pthread_create(&provider, NULL, produce, NULL);
+ pthread_create(&consumer, NULL, consume, NULL);
 
-	status = pthread_create(&provider, NULL, produce, NULL);
-	if (status != 0) {
-		cout << "main error: can't create thread\n";
-		exit(ERROR_CREATE_THREAD);
-	}
-
-	status = pthread_create(&consumer, NULL, consume, NULL);
-	if (status != 0) {
-		cout << "main error: can't create thread\n";
-		exit(ERROR_CREATE_THREAD);
-	}
-
-	pthread_join(provider, NULL);
-	if (status != SUCCESS) {
-		cout << "main error: can't join thread\n";
-		exit(ERROR_JOIN_THREAD);
-	}
-
-	pthread_join(consumer, NULL);
-	if (status != SUCCESS) {
-		cout << "main error: can't join thread\n";
-		exit(ERROR_JOIN_THREAD);
-	}
-	return 0;
+ pthread_join(provider, NULL);
+ pthread_join(consumer, NULL);
+ return 0;
 }
