@@ -51,7 +51,7 @@ void* consume(void* arg) {
 }
 
 int main() {
-	pthread_t provider;
+ pthread_t provider;
  pthread_t consumer;
 
  pthread_create(&provider, NULL, produce, NULL);
